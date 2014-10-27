@@ -16,11 +16,11 @@ Just run `go get github.com/jinntrance/pool`
 
 ## Examples
 
-initial a pool
+Initial a pool
 ```
 var pool = Pool{
         New: func() (interface{}, error) {
-                cli, _, err := InitSocket(GetAServer())
+                cli, err := CreateAClient(GetAServer())
                 return cli, err
         },
         Close: func(x interface{}) {
@@ -31,11 +31,12 @@ var pool = Pool{
 }
 
 ```
-and then use the pool
+Where `Client` is your the type for your sepecific client.
+Then use the pool just created
 ```
 cli, err := pool.Get()
 if nil == err {
-        client := cli.(*Client) //get a client and convert it to the specific type
+        client := cli.(*Client) //get a client and convert it to a specific type
         re, lastError := client.doSomething()
         err = lastError //record the last error
 } 
