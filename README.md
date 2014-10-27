@@ -1,13 +1,11 @@
 golang-pool
 ====
 
-A pool Implementation for golang
-
 ## pool.go
 
-pool.go is a client for  
+pool.go is a pool implementation for golang.
 
-Features include:
+Its features include:
 
 * Network failure tolerance
 * On-demand connection establishment
