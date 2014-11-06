@@ -13,17 +13,17 @@ const (
 
 type Pool struct {
 	shared chan interface{}
-	//store the clients of the minPoolSize
+	//store the clients of the MinPoolSize
 	minShared chan interface{}
 	//return a new object and error
 	New func() (interface{}, error)
 	//close the element, usually a client
 	Close       func(interface{})
-	poolSize    int
-	minPoolSize int
-	//whether to wait for others to return clients when the poolSize is exceeded
+	PoolSize    int
+	MinPoolSize int
+	//whether to wait for others to return clients when the PoolSize is exceeded
 	defaultToWait  bool
-	recycleTimeout int
+	RecycleTimeout int
 }
 
 // Put element 'x' back to the pool.
@@ -39,7 +39,7 @@ func (p *Pool) Put(x interface{}, lastError error) {
 		//push back the element to the pool 'minShared' and then 'shared'
 		case p.minShared <- x:
 		case p.shared <- x:
-		//or else remove items when item size exceeds poolSize
+		//or else remove items when item size exceeds PoolSize
 		default:
 			p.Close(x)
 		}
@@ -48,29 +48,29 @@ func (p *Pool) Put(x interface{}, lastError error) {
 }
 
 func (p *Pool) Init() *Pool {
-	if 0 >= p.minPoolSize {
-		p.minPoolSize = defaultMinPoolSize
+	if 0 >= p.MinPoolSize {
+		p.MinPoolSize = defaultMinPoolSize
 	}
-	if 0 >= p.poolSize {
-		p.poolSize = defaultPoolSize
+	if 0 >= p.PoolSize {
+		p.PoolSize = defaultPoolSize
 	}
-	if p.minPoolSize > p.poolSize {
-		p.poolSize = p.minPoolSize
+	if p.MinPoolSize > p.PoolSize {
+		p.PoolSize = p.MinPoolSize
 	}
 	if nil == p.shared {
-		p.shared = make(chan interface{}, p.poolSize-p.minPoolSize)
+		p.shared = make(chan interface{}, p.PoolSize-p.MinPoolSize)
 	}
 	if nil == p.minShared {
-		p.minShared = make(chan interface{}, p.minPoolSize)
+		p.minShared = make(chan interface{}, p.MinPoolSize)
 	}
-	if 0 >= p.recycleTimeout {
-		p.recycleTimeout = defaultRecycleTimeout
+	if 0 >= p.RecycleTimeout {
+		p.RecycleTimeout = defaultRecycleTimeout
 	}
 	go func() {
 		for {
 			//close those surplus clients
 			select {
-			case <-time.After(time.Duration(p.recycleTimeout) * time.Minute):
+			case <-time.After(time.Duration(p.RecycleTimeout) * time.Minute):
 				for {
 					select {
 					case c := <-p.shared:
