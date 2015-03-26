@@ -3,7 +3,7 @@ golang-pool
 
 ## pool.go
 
-pool.go is a pool implementation for golang.
+pool.go is a pool implementation for golang. You may need it if you use golang with version <= 1.2 
 
 Its features include:
 
@@ -17,7 +17,7 @@ Just run `go get github.com/jinntrance/pool`
 ## Examples
 
 Initial a pool
-```
+```go
 var pool = Pool{
         New: func() (interface{}, error) {
                 cli, err := CreateAClient(GetAServer())
@@ -26,14 +26,13 @@ var pool = Pool{
         Close: func(x interface{}) {
                 x.(*Client).Close()
         },
-        poolSize: 100,
-        defaultToWait: true,
+        PoolSize: 100,
 }
 
 ```
 Where `Client` is your the type for your sepecific client.
 Then use the pool just created
-```
+```go
 cli, err := pool.Get()
 if nil == err {
         client := cli.(*Client) //get a client and convert it to a specific type
