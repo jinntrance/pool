@@ -8,7 +8,7 @@ pool.go is a pool implementation for golang. You may need it if you use golang w
 Its features include:
 
 * Network failure tolerance.
-* Establishing and closing connections on demand.
+* Establishing and closing connections on demand depending on the .
 
 # Installation
 
@@ -19,18 +19,20 @@ Just run `go get github.com/jinntrance/pool`
 Initial a pool
 ```go
 var pool = Pool{
+        //how to create a client and then put it into the pool
         New: func() (interface{}, error) {
                 cli, err := CreateAClient(GetAServer())
                 return cli, err
         },
+        //do something when closing the client
         Close: func(x interface{}) {
                 x.(*Client).Close()
         },
-        PoolSize: 100,
+        PoolSize: 100, //MaxNum of clients to retain
 }
 
 ```
-Where `Client` is your the type for your sepecific client.
+Where `Client` is the type for your sepecific client.
 Then use the pool just created
 ```go
 cli, err := pool.Get()
@@ -39,5 +41,5 @@ if nil == err {
         re, lastError := client.doSomething()
         err = lastError //record the last error
 } 
-pool.Put(cli, err) // put back the client with the error
+pool.Put(cli, err) // put back the client with the error. If error occurs and 'err' is not nil, 'cli' would be closed.
 ```
