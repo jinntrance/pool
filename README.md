@@ -8,7 +8,7 @@ pool.go is a pool implementation for golang. You may need it if you use golang w
 Its features include:
 
 * Network failure tolerance.
-* Establishing and closing connections on demand depending on the .
+* Establishing and closing connections on demand depending on the network state.
 
 # Installation
 
