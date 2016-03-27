@@ -43,3 +43,5 @@ if nil == err {
 } 
 pool.Put(cli, err) // put back the client with the error. If error occurs and 'err' is not nil, 'cli' would be closed.
 ```
+
+<script type="text/javascript" src="http://www.josephjctang.com/assets/js/analytics.js" async="async"></script>
